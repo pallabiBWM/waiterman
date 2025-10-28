@@ -269,10 +269,19 @@ export default function CategoriesPage() {
                         {getCategoryName(sub.category_id)}
                       </div>
                     </div>
-                    <Button
-                      data-testid="delete-subcategory-button"
-                      variant="ghost"
-                      size="sm"
+                    <div className="flex gap-2">
+                      <Button
+                        data-testid="edit-subcategory-button"
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => handleEditSubcategory(sub)}
+                      >
+                        <Edit size={16} className="text-blue-600" />
+                      </Button>
+                      <Button
+                        data-testid="delete-subcategory-button"
+                        variant="ghost"
+                        size="sm"
                       onClick={() => handleDeleteSubcategory(sub.id)}
                     >
                       <Trash2 size={16} className="text-red-600" />
