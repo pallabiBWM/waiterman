@@ -33,6 +33,7 @@ export default function MenuPage() {
   });
   const [subcategories, setSubcategories] = useState([]);
   const [newModifier, setNewModifier] = useState({ name: '', price: '' });
+  const [editingItem, setEditingItem] = useState(null);
 
   useEffect(() => {
     fetchMenuItems();
