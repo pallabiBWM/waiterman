@@ -213,7 +213,13 @@ export default function CategoriesPage() {
         <div>
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-2xl font-semibold">Subcategories</h2>
-            <Dialog open={subOpen} onOpenChange={setSubOpen}>
+            <Dialog open={subOpen} onOpenChange={(open) => {
+              setSubOpen(open);
+              if (!open) {
+                setSubForm({ name: '', category_id: '' });
+                setEditingSubcategory(null);
+              }
+            }}>
               <DialogTrigger asChild>
                 <Button
                   data-testid="add-subcategory-button"
