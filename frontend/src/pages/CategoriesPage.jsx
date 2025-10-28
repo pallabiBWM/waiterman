@@ -294,10 +294,11 @@ export default function CategoriesPage() {
                         data-testid="delete-subcategory-button"
                         variant="ghost"
                         size="sm"
-                      onClick={() => handleDeleteSubcategory(sub.id)}
-                    >
-                      <Trash2 size={16} className="text-red-600" />
-                    </Button>
+                        onClick={() => handleDeleteSubcategory(sub.id)}
+                      >
+                        <Trash2 size={16} className="text-red-600" />
+                      </Button>
+                    </div>
                   </CardTitle>
                 </CardHeader>
               </Card>
