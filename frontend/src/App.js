@@ -4,13 +4,10 @@ import { AuthProvider, useAuth } from './context/AuthContext';
 import LoginPage from './pages/LoginPage';
 import AdminDashboard from './pages/AdminDashboard';
 import TablesPage from './pages/TablesPage';
-import ReservationsPage from './pages/ReservationsPage';
 import CategoriesPage from './pages/CategoriesPage';
 import MenuPage from './pages/MenuPage';
 import OrdersPage from './pages/OrdersPage';
 import DiscountsPage from './pages/DiscountsPage';
-import ReportsPage from './pages/ReportsPage';
-import StaffPage from './pages/StaffPage';
 import CustomerOrder from './pages/CustomerOrder';
 import { Toaster } from '@/components/ui/sonner';
 
