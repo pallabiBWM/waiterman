@@ -56,14 +56,6 @@ function AppRoutes() {
         }
       />
       <Route
-        path="/reservations"
-        element={
-          <ProtectedRoute>
-            <ReservationsPage />
-          </ProtectedRoute>
-        }
-      />
-      <Route
         path="/categories"
         element={
           <ProtectedRoute>
@@ -92,22 +84,6 @@ function AppRoutes() {
         element={
           <ProtectedRoute>
             <DiscountsPage />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/reports"
-        element={
-          <ProtectedRoute>
-            <ReportsPage />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/staff"
-        element={
-          <ProtectedRoute>
-            <StaffPage />
           </ProtectedRoute>
         }
       />
