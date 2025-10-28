@@ -53,8 +53,10 @@ def decode_token(token: str) -> dict:
             headers={'WWW-Authenticate': 'Bearer'},
         )
 
-async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(security), db: AsyncIOMotorDatabase = None):
-    """Get the current authenticated user"""
+async def get_current_user_dependency(credentials: HTTPAuthorizationCredentials = Depends(security)):
+    """Get the current authenticated user - use this in routes"""
+    from dependencies import get_database
+    
     token = credentials.credentials
     payload = decode_token(token)
     
@@ -65,6 +67,7 @@ async def get_current_user(credentials: HTTPAuthorizationCredentials = Depends(s
             detail='Could not validate credentials',
         )
     
+    db = get_database()
     user = await db.users.find_one({'id': user_id}, {'_id': 0})
     if user is None:
         raise HTTPException(
