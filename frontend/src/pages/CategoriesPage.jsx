@@ -49,29 +49,53 @@ export default function CategoriesPage() {
   const handleCategorySubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post(`${API}/categories`, catForm);
-      toast.success('Category created successfully');
+      if (editingCategory) {
+        await axios.put(`${API}/categories/${editingCategory}`, catForm);
+        toast.success('Category updated successfully');
+      } else {
+        await axios.post(`${API}/categories`, catForm);
+        toast.success('Category created successfully');
+      }
       setCatOpen(false);
       setCatForm({ name: '' });
+      setEditingCategory(null);
       fetchCategories();
     } catch (error) {
-      console.error('Error creating category:', error);
-      toast.error('Failed to create category');
+      console.error('Error saving category:', error);
+      toast.error('Failed to save category');
     }
+  };
+
+  const handleEditCategory = (category) => {
+    setCatForm({ name: category.name });
+    setEditingCategory(category.id);
+    setCatOpen(true);
   };
 
   const handleSubcategorySubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post(`${API}/subcategories`, subForm);
-      toast.success('Subcategory created successfully');
+      if (editingSubcategory) {
+        await axios.put(`${API}/subcategories/${editingSubcategory}`, subForm);
+        toast.success('Subcategory updated successfully');
+      } else {
+        await axios.post(`${API}/subcategories`, subForm);
+        toast.success('Subcategory created successfully');
+      }
       setSubOpen(false);
       setSubForm({ name: '', category_id: '' });
+      setEditingSubcategory(null);
       fetchSubcategories();
     } catch (error) {
-      console.error('Error creating subcategory:', error);
-      toast.error('Failed to create subcategory');
+      console.error('Error saving subcategory:', error);
+      toast.error('Failed to save subcategory');
     }
+  };
+
+  const handleEditSubcategory = (subcategory) => {
+    setSubForm({ name: subcategory.name, category_id: subcategory.category_id });
+    setEditingSubcategory(subcategory.id);
+    setSubOpen(true);
   };
 
   const handleDeleteCategory = async (id) => {
