@@ -234,6 +234,64 @@ class Order(BaseModel):
 class OrderStatusUpdate(BaseModel):
     order_status: OrderStatus
 
+# ============ DISCOUNT & PROMOTION MODELS ============
+
+class DiscountType(str, Enum):
+    PERCENTAGE = "percentage"
+    FIXED = "fixed"
+    BOGO = "bogo"
+
+class DiscountCreate(BaseModel):
+    name: str
+    type: DiscountType
+    value: float
+    start_date: Optional[datetime] = None
+    end_date: Optional[datetime] = None
+    is_active: bool = True
+    applied_on: str = "order"  # order, category, item
+
+class Discount(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    name: str
+    type: DiscountType
+    value: float
+    start_date: Optional[datetime] = None
+    end_date: Optional[datetime] = None
+    is_active: bool = True
+    applied_on: str = "order"
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+# ============ RESERVATION MODELS ============
+
+class ReservationStatus(str, Enum):
+    PENDING = "pending"
+    CONFIRMED = "confirmed"
+    CANCELLED = "cancelled"
+    COMPLETED = "completed"
+
+class ReservationCreate(BaseModel):
+    table_id: str
+    customer_name: str
+    customer_phone: str
+    customer_email: Optional[str] = None
+    party_size: int
+    reservation_date: datetime
+    notes: Optional[str] = None
+
+class Reservation(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    table_id: str
+    customer_name: str
+    customer_phone: str
+    customer_email: Optional[str] = None
+    party_size: int
+    reservation_date: datetime
+    status: ReservationStatus = ReservationStatus.PENDING
+    notes: Optional[str] = None
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
 # ============ UTILITY FUNCTIONS ============
 
 def generate_qr_code(data: str) -> str:
