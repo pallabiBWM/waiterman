@@ -15,7 +15,7 @@ import base64
 from enum import Enum
 from auth import (
     verify_password, get_password_hash, create_access_token,
-    get_current_user, require_role, UserRole
+    get_current_user_dependency, require_role, UserRole
 )
 
 ROOT_DIR = Path(__file__).parent
