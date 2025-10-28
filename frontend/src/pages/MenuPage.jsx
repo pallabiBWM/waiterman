@@ -167,7 +167,22 @@ export default function MenuPage() {
             <h1 className="text-4xl font-bold text-gray-800 mb-2">Menu Items</h1>
             <p className="text-gray-600">Manage your restaurant menu</p>
           </div>
-          <Dialog open={open} onOpenChange={setOpen}>
+          <Dialog open={open} onOpenChange={(open) => {
+            setOpen(open);
+            if (!open) {
+              setFormData({
+                name: '',
+                description: '',
+                pricing: { dine_in: '', takeaway: '', delivery: '' },
+                tax: '',
+                category_id: '',
+                sub_category_id: '',
+                availability: true,
+                modifiers: []
+              });
+              setEditingItem(null);
+            }
+          }}>
             <DialogTrigger asChild>
               <Button
                 data-testid="add-menu-item-button"
