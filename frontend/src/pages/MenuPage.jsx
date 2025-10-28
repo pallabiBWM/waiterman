@@ -151,49 +151,49 @@ export default function MenuPage() {
 
   return (
     <AdminLayout>
-      <div className=\"p-8\">
-        <div className=\"flex justify-between items-center mb-8\">
+      <div className="p-8">
+        <div className="flex justify-between items-center mb-8">
           <div>
-            <h1 className=\"text-4xl font-bold text-gray-800 mb-2\">Menu Items</h1>
-            <p className=\"text-gray-600\">Manage your restaurant menu</p>
+            <h1 className="text-4xl font-bold text-gray-800 mb-2">Menu Items</h1>
+            <p className="text-gray-600">Manage your restaurant menu</p>
           </div>
           <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
               <Button
-                data-testid=\"add-menu-item-button\"
-                className=\"bg-gradient-to-r from-blue-500 to-cyan-500\"
+                data-testid="add-menu-item-button"
+                className="bg-gradient-to-r from-blue-500 to-cyan-500"
               >
-                <Plus size={20} className=\"mr-2\" />
+                <Plus size={20} className="mr-2" />
                 Add Menu Item
               </Button>
             </DialogTrigger>
-            <DialogContent className=\"max-w-3xl max-h-[90vh] overflow-y-auto\">
+            <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
               <DialogHeader>
                 <DialogTitle>Create Menu Item</DialogTitle>
               </DialogHeader>
-              <form onSubmit={handleSubmit} className=\"space-y-4\">
-                <div className=\"grid grid-cols-2 gap-4\">
+              <form onSubmit={handleSubmit} className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <Label htmlFor=\"name\">Item Name</Label>
+                    <Label htmlFor="name">Item Name</Label>
                     <Input
-                      id=\"name\"
-                      data-testid=\"menu-item-name-input\"
+                      id="name"
+                      data-testid="menu-item-name-input"
                       value={formData.name}
                       onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                       required
                     />
                   </div>
                   <div>
-                    <Label htmlFor=\"category\">Category</Label>
+                    <Label htmlFor="category">Category</Label>
                     <select
-                      id=\"category\"
-                      data-testid=\"menu-item-category-select\"
-                      className=\"w-full p-2 border rounded-md\"
+                      id="category"
+                      data-testid="menu-item-category-select"
+                      className="w-full p-2 border rounded-md"
                       value={formData.category_id}
                       onChange={(e) => setFormData({ ...formData, category_id: e.target.value, sub_category_id: '' })}
                       required
                     >
-                      <option value=\"\">Select Category</option>
+                      <option value="">Select Category</option>
                       {categories.map((cat) => (
                         <option key={cat.id} value={cat.id}>
                           {cat.name}
@@ -204,16 +204,16 @@ export default function MenuPage() {
                 </div>
 
                 <div>
-                  <Label htmlFor=\"subcategory\">Subcategory (Optional)</Label>
+                  <Label htmlFor="subcategory">Subcategory (Optional)</Label>
                   <select
-                    id=\"subcategory\"
-                    data-testid=\"menu-item-subcategory-select\"
-                    className=\"w-full p-2 border rounded-md\"
+                    id="subcategory"
+                    data-testid="menu-item-subcategory-select"
+                    className="w-full p-2 border rounded-md"
                     value={formData.sub_category_id}
                     onChange={(e) => setFormData({ ...formData, sub_category_id: e.target.value })}
                     disabled={!formData.category_id}
                   >
-                    <option value=\"\">Select Subcategory</option>
+                    <option value="">Select Subcategory</option>
                     {filteredSubcategories.map((sub) => (
                       <option key={sub.id} value={sub.id}>
                         {sub.name}
@@ -223,50 +223,50 @@ export default function MenuPage() {
                 </div>
 
                 <div>
-                  <Label htmlFor=\"description\">Description</Label>
+                  <Label htmlFor="description">Description</Label>
                   <Textarea
-                    id=\"description\"
-                    data-testid=\"menu-item-description-input\"
+                    id="description"
+                    data-testid="menu-item-description-input"
                     value={formData.description}
                     onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                     rows={2}
                   />
                 </div>
 
-                <div className=\"border p-4 rounded-lg bg-gray-50\">
-                  <h3 className=\"font-semibold mb-3\">Pricing (₹)</h3>
-                  <div className=\"grid grid-cols-3 gap-4\">
+                <div className="border p-4 rounded-lg bg-gray-50">
+                  <h3 className="font-semibold mb-3">Pricing (₹)</h3>
+                  <div className="grid grid-cols-3 gap-4">
                     <div>
-                      <Label htmlFor=\"dine_in_price\">Dine-In Price</Label>
+                      <Label htmlFor="dine_in_price">Dine-In Price</Label>
                       <Input
-                        id=\"dine_in_price\"
-                        data-testid=\"menu-item-dine-in-price-input\"
-                        type=\"number\"
-                        step=\"0.01\"
+                        id="dine_in_price"
+                        data-testid="menu-item-dine-in-price-input"
+                        type="number"
+                        step="0.01"
                         value={formData.pricing.dine_in}
                         onChange={(e) => setFormData({ ...formData, pricing: { ...formData.pricing, dine_in: e.target.value } })}
                         required
                       />
                     </div>
                     <div>
-                      <Label htmlFor=\"takeaway_price\">Takeaway Price</Label>
+                      <Label htmlFor="takeaway_price">Takeaway Price</Label>
                       <Input
-                        id=\"takeaway_price\"
-                        data-testid=\"menu-item-takeaway-price-input\"
-                        type=\"number\"
-                        step=\"0.01\"
+                        id="takeaway_price"
+                        data-testid="menu-item-takeaway-price-input"
+                        type="number"
+                        step="0.01"
                         value={formData.pricing.takeaway}
                         onChange={(e) => setFormData({ ...formData, pricing: { ...formData.pricing, takeaway: e.target.value } })}
                         required
                       />
                     </div>
                     <div>
-                      <Label htmlFor=\"delivery_price\">Delivery Price</Label>
+                      <Label htmlFor="delivery_price">Delivery Price</Label>
                       <Input
-                        id=\"delivery_price\"
-                        data-testid=\"menu-item-delivery-price-input\"
-                        type=\"number\"
-                        step=\"0.01\"
+                        id="delivery_price"
+                        data-testid="menu-item-delivery-price-input"
+                        type="number"
+                        step="0.01"
                         value={formData.pricing.delivery}
                         onChange={(e) => setFormData({ ...formData, pricing: { ...formData.pricing, delivery: e.target.value } })}
                       />
@@ -275,49 +275,49 @@ export default function MenuPage() {
                 </div>
 
                 <div>
-                  <Label htmlFor=\"tax\">Tax (₹)</Label>
+                  <Label htmlFor="tax">Tax (₹)</Label>
                   <Input
-                    id=\"tax\"
-                    data-testid=\"menu-item-tax-input\"
-                    type=\"number\"
-                    step=\"0.01\"
+                    id="tax"
+                    data-testid="menu-item-tax-input"
+                    type="number"
+                    step="0.01"
                     value={formData.tax}
                     onChange={(e) => setFormData({ ...formData, tax: e.target.value })}
                   />
                 </div>
 
-                <div className=\"border p-4 rounded-lg bg-gray-50\">
-                  <h3 className=\"font-semibold mb-3\">Modifiers</h3>
-                  <div className=\"flex gap-2 mb-3\">
+                <div className="border p-4 rounded-lg bg-gray-50">
+                  <h3 className="font-semibold mb-3">Modifiers</h3>
+                  <div className="flex gap-2 mb-3">
                     <Input
-                      placeholder=\"Modifier name (e.g., Extra Cheese)\"
-                      data-testid=\"modifier-name-input\"
+                      placeholder="Modifier name (e.g., Extra Cheese)"
+                      data-testid="modifier-name-input"
                       value={newModifier.name}
                       onChange={(e) => setNewModifier({ ...newModifier, name: e.target.value })}
                     />
                     <Input
-                      placeholder=\"Price\"
-                      data-testid=\"modifier-price-input\"
-                      type=\"number\"
-                      step=\"0.01\"
-                      className=\"w-32\"
+                      placeholder="Price"
+                      data-testid="modifier-price-input"
+                      type="number"
+                      step="0.01"
+                      className="w-32"
                       value={newModifier.price}
                       onChange={(e) => setNewModifier({ ...newModifier, price: e.target.value })}
                     />
-                    <Button type=\"button\" onClick={handleAddModifier} data-testid=\"add-modifier-button\">
+                    <Button type="button" onClick={handleAddModifier} data-testid="add-modifier-button">
                       <Plus size={16} />
                     </Button>
                   </div>
-                  <div className=\"space-y-2\">
+                  <div className="space-y-2">
                     {formData.modifiers.map((mod, index) => (
-                      <div key={index} className=\"flex items-center justify-between bg-white p-2 rounded\" data-testid=\"modifier-item\">
+                      <div key={index} className="flex items-center justify-between bg-white p-2 rounded" data-testid="modifier-item">
                         <span>{mod.name} - ₹{mod.price}</span>
                         <Button
-                          type=\"button\"
-                          variant=\"ghost\"
-                          size=\"sm\"
+                          type="button"
+                          variant="ghost"
+                          size="sm"
                           onClick={() => handleRemoveModifier(index)}
-                          data-testid=\"remove-modifier-button\"
+                          data-testid="remove-modifier-button"
                         >
                           <X size={16} />
                         </Button>
@@ -326,7 +326,7 @@ export default function MenuPage() {
                   </div>
                 </div>
 
-                <Button type=\"submit\" data-testid=\"submit-menu-item-button\" className=\"w-full\">
+                <Button type="submit" data-testid="submit-menu-item-button" className="w-full">
                   Create Item
                 </Button>
               </form>
@@ -334,51 +334,51 @@ export default function MenuPage() {
           </Dialog>
         </div>
 
-        <div className=\"grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6\">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {menuItems.map((item) => (
-            <Card key={item.id} className=\"border-0 shadow-lg hover:shadow-xl transition-shadow\" data-testid=\"menu-item-card\">
+            <Card key={item.id} className="border-0 shadow-lg hover:shadow-xl transition-shadow" data-testid="menu-item-card">
               <CardHeader>
-                <CardTitle className=\"flex justify-between items-start\">
+                <CardTitle className="flex justify-between items-start">
                   <div>
                     <div>{item.name}</div>
-                    <div className=\"text-xs text-gray-500 font-normal mt-1\">
+                    <div className="text-xs text-gray-500 font-normal mt-1">
                       {getCategoryName(item.category_id)}{getSubcategoryName(item.sub_category_id)}
                     </div>
                   </div>
                   <Button
-                    data-testid=\"delete-menu-item-button\"
-                    variant=\"ghost\"
-                    size=\"sm\"
+                    data-testid="delete-menu-item-button"
+                    variant="ghost"
+                    size="sm"
                     onClick={() => handleDelete(item.id)}
                   >
-                    <Trash2 size={16} className=\"text-red-600\" />
+                    <Trash2 size={16} className="text-red-600" />
                   </Button>
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <p className=\"text-gray-600 text-sm mb-3\">{item.description || 'No description'}</p>
-                <div className=\"space-y-2 mb-3\">
-                  <div className=\"flex justify-between text-sm\">
-                    <span className=\"text-gray-600\">Dine-In:</span>
-                    <span className=\"font-semibold text-blue-600\">₹{item.pricing?.dine_in || item.price}</span>
+                <p className="text-gray-600 text-sm mb-3">{item.description || 'No description'}</p>
+                <div className="space-y-2 mb-3">
+                  <div className="flex justify-between text-sm">
+                    <span className="text-gray-600">Dine-In:</span>
+                    <span className="font-semibold text-blue-600">₹{item.pricing?.dine_in || item.price}</span>
                   </div>
-                  <div className=\"flex justify-between text-sm\">
-                    <span className=\"text-gray-600\">Takeaway:</span>
-                    <span className=\"font-semibold text-green-600\">₹{item.pricing?.takeaway || item.price}</span>
+                  <div className="flex justify-between text-sm">
+                    <span className="text-gray-600">Takeaway:</span>
+                    <span className="font-semibold text-green-600">₹{item.pricing?.takeaway || item.price}</span>
                   </div>
                   {item.pricing?.delivery > 0 && (
-                    <div className=\"flex justify-between text-sm\">
-                      <span className=\"text-gray-600\">Delivery:</span>
-                      <span className=\"font-semibold text-purple-600\">₹{item.pricing.delivery}</span>
+                    <div className="flex justify-between text-sm">
+                      <span className="text-gray-600">Delivery:</span>
+                      <span className="font-semibold text-purple-600">₹{item.pricing.delivery}</span>
                     </div>
                   )}
                 </div>
                 {item.modifiers && item.modifiers.length > 0 && (
-                  <div className=\"text-xs text-gray-500 mb-2\">
+                  <div className="text-xs text-gray-500 mb-2">
                     {item.modifiers.length} modifier(s) available
                   </div>
                 )}
-                <div className=\"flex justify-between items-center\">
+                <div className="flex justify-between items-center">
                   <span
                     className={`text-xs px-2 py-1 rounded-full ${
                       item.availability ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
