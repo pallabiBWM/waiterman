@@ -4,7 +4,7 @@ import { getAuthHeader } from '../context/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { Plus, Minus, Trash2, ShoppingCart, DollarSign, Printer, Save, Send, Search, Bell, User, X, QrCode, Edit2, AlertCircle } from 'lucide-react';
+import { Plus, Minus, Trash2, ShoppingCart, DollarSign, Printer, Save, Send, Search, Bell, User, X, QrCode, Edit2, AlertCircle, Utensils } from 'lucide-react';
 import { toast } from 'sonner';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Textarea } from '@/components/ui/textarea';
