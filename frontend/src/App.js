@@ -88,6 +88,14 @@ function AppRoutes() {
           </ProtectedRoute>
         }
       />
+      <Route
+        path="/pos"
+        element={
+          <ProtectedRoute>
+            <POSScreen />
+          </ProtectedRoute>
+        }
+      />
       <Route path="/order/:tableId" element={<CustomerOrder />} />
     </Routes>
   );
