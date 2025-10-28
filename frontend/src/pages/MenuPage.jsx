@@ -367,6 +367,14 @@ export default function MenuPage() {
                   </div>
                   <div className="flex gap-2">
                     <Button
+                      data-testid="edit-menu-item-button"
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => handleEditItem(item)}
+                    >
+                      <Edit2 size={16} className="text-blue-600" />
+                    </Button>
+                    <Button
                       data-testid="delete-menu-item-button"
                       variant="ghost"
                       size="sm"
