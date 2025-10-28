@@ -20,11 +20,19 @@ export default function MenuPage() {
   const [formData, setFormData] = useState({
     name: '',
     description: '',
-    price: '',
+    pricing: {
+      dine_in: '',
+      takeaway: '',
+      delivery: ''
+    },
     tax: '',
     category_id: '',
+    sub_category_id: '',
     availability: true,
+    modifiers: []
   });
+  const [subcategories, setSubcategories] = useState([]);
+  const [newModifier, setNewModifier] = useState({ name: '', price: '' });
 
   useEffect(() => {
     fetchMenuItems();
