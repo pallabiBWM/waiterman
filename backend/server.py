@@ -311,7 +311,7 @@ async def get_me(current_user: dict = Depends(get_current_user_dependency)):
 @api_router.post("/restaurants", response_model=Restaurant)
 async def create_restaurant(
     restaurant: RestaurantCreate,
-    current_user: dict = Depends(lambda cred=Depends(None): get_current_user(cred, db))
+    current_user: dict = Depends(get_current_user_dependency)
 ):
     """Create a new restaurant"""
     restaurant_obj = Restaurant(
@@ -327,7 +327,7 @@ async def create_restaurant(
 
 @api_router.get("/restaurants", response_model=List[Restaurant])
 async def get_restaurants(
-    current_user: dict = Depends(lambda cred=Depends(None): get_current_user(cred, db))
+    current_user: dict = Depends(get_current_user_dependency)
 ):
     """Get all restaurants for current user"""
     query = {}
