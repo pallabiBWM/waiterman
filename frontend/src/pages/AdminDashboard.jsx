@@ -1,13 +1,16 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { AdminLayout } from '../components/AdminLayout';
 import axios from 'axios';
-import { DollarSign, ShoppingBag, Utensils, Grid3x3 } from 'lucide-react';
+import { DollarSign, ShoppingBag, Utensils, Grid3x3, Terminal } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
 export default function AdminDashboard() {
+  const navigate = useNavigate();
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
 
