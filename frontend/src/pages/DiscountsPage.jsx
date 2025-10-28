@@ -72,8 +72,8 @@ export default function DiscountsPage() {
       <div className=\"p-8\">
         <div className=\"flex justify-between items-center mb-8\">
           <div>
-            <h1 className=\"text-4xl font-bold text-gray-800 mb-2\">Discounts & Promotions</h1>
-            <p className=\"text-gray-600\">Manage offers and discounts</p>
+            <h1 className="text-4xl font-bold text-gray-800 mb-2">Discounts & Promotions</h1>
+            <p className="text-gray-600">Manage offers and discounts</p>
           </div>
           <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
