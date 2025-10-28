@@ -332,7 +332,7 @@ export default function MenuPage() {
                 </div>
                 
                 <Button type="submit" data-testid="submit-menu-item-button" className="w-full">
-                  Create Item
+                  {editingItem ? 'Update Item' : 'Create Item'}
                 </Button>
               </form>
             </DialogContent>
