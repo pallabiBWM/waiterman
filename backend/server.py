@@ -576,6 +576,19 @@ async def get_menu_items(category_id: Optional[str] = None, available_only: bool
     for item in items:
         if isinstance(item['created_at'], str):
             item['created_at'] = datetime.fromisoformat(item['created_at'])
+        
+        # Migrate old format to new format on the fly
+        if 'price' in item and 'pricing' not in item:
+            item['pricing'] = {
+                'dine_in': item['price'],
+                'takeaway': item['price'],
+                'delivery': item['price']
+            }
+        
+        # Ensure modifiers field exists
+        if 'modifiers' not in item:
+            item['modifiers'] = []
+    
     return items
 
 @api_router.put("/menu/item/{item_id}", response_model=MenuItem)
