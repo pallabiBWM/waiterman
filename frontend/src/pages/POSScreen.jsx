@@ -159,8 +159,19 @@ export default function POSScreen() {
       return;
     }
 
+    // Mandatory validations
     if (orderType === 'dine_in' && !selectedTable) {
-      toast.error('Please select a table');
+      toast.error('Please select a table for dine-in order');
+      return;
+    }
+
+    if ((orderType === 'takeaway' || orderType === 'delivery') && !customerName) {
+      toast.error('Please enter customer name');
+      return;
+    }
+
+    if ((orderType === 'takeaway' || orderType === 'delivery') && !customerPhone) {
+      toast.error('Please enter customer phone number');
       return;
     }
 
