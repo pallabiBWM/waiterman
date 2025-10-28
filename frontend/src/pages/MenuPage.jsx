@@ -187,6 +187,25 @@ export default function MenuPage() {
                     </select>
                   </div>
                 </div>
+                
+                <div>
+                  <Label htmlFor="subcategory">Subcategory (Optional)</Label>
+                  <select
+                    id="subcategory"
+                    data-testid="menu-item-subcategory-select"
+                    className="w-full p-2 border rounded-md"
+                    value={formData.sub_category_id}
+                    onChange={(e) => setFormData({ ...formData, sub_category_id: e.target.value })}
+                  >
+                    <option value="">None</option>
+                    {subcategories.filter(sub => sub.category_id === formData.category_id).map((sub) => (
+                      <option key={sub.id} value={sub.id}>
+                        {sub.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                
                 <div>
                   <Label htmlFor="description">Description</Label>
                   <Textarea
@@ -197,17 +216,99 @@ export default function MenuPage() {
                     rows={3}
                   />
                 </div>
+                
+                <div className="border p-4 rounded-lg bg-gray-50">
+                  <h3 className="font-semibold mb-3">Pricing (₹)</h3>
+                  <div className="grid grid-cols-3 gap-4">
+                    <div>
+                      <Label htmlFor="dine_in_price">Dine-In</Label>
+                      <Input
+                        id="dine_in_price"
+                        data-testid="menu-item-dine-in-price"
+                        type="number"
+                        step="0.01"
+                        value={formData.pricing.dine_in}
+                        onChange={(e) => setFormData({ ...formData, pricing: { ...formData.pricing, dine_in: e.target.value } })}
+                        required
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="takeaway_price">Takeaway</Label>
+                      <Input
+                        id="takeaway_price"
+                        data-testid="menu-item-takeaway-price"
+                        type="number"
+                        step="0.01"
+                        value={formData.pricing.takeaway}
+                        onChange={(e) => setFormData({ ...formData, pricing: { ...formData.pricing, takeaway: e.target.value } })}
+                        required
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="delivery_price">Delivery</Label>
+                      <Input
+                        id="delivery_price"
+                        data-testid="menu-item-delivery-price"
+                        type="number"
+                        step="0.01"
+                        value={formData.pricing.delivery}
+                        onChange={(e) => setFormData({ ...formData, pricing: { ...formData.pricing, delivery: e.target.value } })}
+                      />
+                    </div>
+                  </div>
+                </div>
+                
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <Label htmlFor="price">Price (₹)</Label>
+                    <Label htmlFor="tax">Tax (₹)</Label>
                     <Input
-                      id="price"
-                      data-testid="menu-item-price-input"
+                      id="tax"
+                      data-testid="menu-item-tax-input"
                       type="number"
                       step="0.01"
-                      value={formData.price}
-                      onChange={(e) => setFormData({ ...formData, price: e.target.value })}
-                      required
+                      value={formData.tax}
+                      onChange={(e) => setFormData({ ...formData, tax: e.target.value })}
+                    />
+                  </div>
+                </div>
+                
+                <div className="border p-4 rounded-lg bg-gray-50">
+                  <h3 className="font-semibold mb-3">Modifiers (Optional)</h3>
+                  <div className="flex gap-2 mb-3">
+                    <Input
+                      placeholder="e.g., Extra Cheese"
+                      value={newModifier.name}
+                      onChange={(e) => setNewModifier({ ...newModifier, name: e.target.value })}
+                    />
+                    <Input
+                      placeholder="Price"
+                      type="number"
+                      step="0.01"
+                      className="w-32"
+                      value={newModifier.price}
+                      onChange={(e) => setNewModifier({ ...newModifier, price: e.target.value })}
+                    />
+                    <Button type="button" onClick={handleAddModifier}>
+                      <Plus size={16} />
+                    </Button>
+                  </div>
+                  {formData.modifiers.length > 0 && (
+                    <div className="space-y-2">
+                      {formData.modifiers.map((mod, idx) => (
+                        <div key={idx} className="flex justify-between items-center bg-white p-2 rounded">
+                          <span>{mod.name} - ₹{mod.price}</span>
+                          <Button type="button" variant="ghost" size="sm" onClick={() => handleRemoveModifier(idx)}>
+                            <Trash2 size={14} />
+                          </Button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+                
+                <Button type="submit" data-testid="submit-menu-item-button" className="w-full">
+                  Create Item
+                </Button>
                     />
                   </div>
                   <div>
