@@ -251,7 +251,7 @@ export default function CategoriesPage() {
                     />
                   </div>
                   <Button type="submit" data-testid="submit-subcategory-button" className="w-full">
-                    Create
+                    {editingSubcategory ? 'Update' : 'Create'}
                   </Button>
                 </form>
               </DialogContent>
