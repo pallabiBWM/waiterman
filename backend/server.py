@@ -774,6 +774,189 @@ async def get_dashboard_stats():
         "total_menu_items": total_menu_items
     }
 
+# ============ DISCOUNT & PROMOTION ROUTES ============
+
+@api_router.post("/discounts", response_model=Discount)
+async def create_discount(discount: DiscountCreate):
+    """Create a new discount"""
+    discount_obj = Discount(**discount.model_dump())
+    doc = discount_obj.model_dump()
+    doc['created_at'] = doc['created_at'].isoformat()
+    if doc.get('start_date'):
+        doc['start_date'] = doc['start_date'].isoformat()
+    if doc.get('end_date'):
+        doc['end_date'] = doc['end_date'].isoformat()
+    
+    await db.discounts.insert_one(doc)
+    return discount_obj
+
+@api_router.get("/discounts", response_model=List[Discount])
+async def get_discounts():
+    """Get all discounts"""
+    discounts = await db.discounts.find({}, {"_id": 0}).to_list(1000)
+    for discount in discounts:
+        if isinstance(discount['created_at'], str):
+            discount['created_at'] = datetime.fromisoformat(discount['created_at'])
+        if discount.get('start_date') and isinstance(discount['start_date'], str):
+            discount['start_date'] = datetime.fromisoformat(discount['start_date'])
+        if discount.get('end_date') and isinstance(discount['end_date'], str):
+            discount['end_date'] = datetime.fromisoformat(discount['end_date'])
+    return discounts
+
+@api_router.delete("/discounts/{discount_id}")
+async def delete_discount(discount_id: str):
+    """Delete a discount"""
+    result = await db.discounts.delete_one({"id": discount_id})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Discount not found")
+    return {"message": "Discount deleted successfully"}
+
+# ============ RESERVATION ROUTES ============
+
+@api_router.post("/reservations", response_model=Reservation)
+async def create_reservation(reservation: ReservationCreate):
+    """Create a new reservation"""
+    # Check if table exists
+    table = await db.tables.find_one({"id": reservation.table_id})
+    if not table:
+        raise HTTPException(status_code=404, detail="Table not found")
+    
+    reservation_obj = Reservation(**reservation.model_dump())
+    doc = reservation_obj.model_dump()
+    doc['created_at'] = doc['created_at'].isoformat()
+    doc['reservation_date'] = doc['reservation_date'].isoformat()
+    
+    await db.reservations.insert_one(doc)
+    return reservation_obj
+
+@api_router.get("/reservations", response_model=List[Reservation])
+async def get_reservations(status: Optional[ReservationStatus] = None):
+    """Get all reservations"""
+    query = {}
+    if status:
+        query['status'] = status
+    
+    reservations = await db.reservations.find(query, {"_id": 0}).sort("reservation_date", -1).to_list(1000)
+    for reservation in reservations:
+        if isinstance(reservation['created_at'], str):
+            reservation['created_at'] = datetime.fromisoformat(reservation['created_at'])
+        if isinstance(reservation['reservation_date'], str):
+            reservation['reservation_date'] = datetime.fromisoformat(reservation['reservation_date'])
+    return reservations
+
+@api_router.patch("/reservations/{reservation_id}/status")
+async def update_reservation_status(reservation_id: str, status: ReservationStatus):
+    """Update reservation status"""
+    result = await db.reservations.update_one(
+        {"id": reservation_id},
+        {"$set": {"status": status}}
+    )
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Reservation not found")
+    return {"message": "Reservation updated successfully"}
+
+@api_router.delete("/reservations/{reservation_id}")
+async def delete_reservation(reservation_id: str):
+    """Delete a reservation"""
+    result = await db.reservations.delete_one({"id": reservation_id})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Reservation not found")
+    return {"message": "Reservation deleted successfully"}
+
+# ============ STAFF/USER MANAGEMENT ROUTES ============
+
+@api_router.get("/users", response_model=List[User])
+async def get_users(current_user: dict = Depends(get_current_user_dependency)):
+    """Get all users (Admin only)"""
+    if current_user['role'] not in [UserRole.SUPER_ADMIN, UserRole.BRANCH_ADMIN]:
+        raise HTTPException(status_code=403, detail="Insufficient permissions")
+    
+    users = await db.users.find({}, {"_id": 0, "password": 0}).to_list(1000)
+    for user in users:
+        if isinstance(user['created_at'], str):
+            user['created_at'] = datetime.fromisoformat(user['created_at'])
+    return users
+
+@api_router.delete("/users/{user_id}")
+async def delete_user(user_id: str, current_user: dict = Depends(get_current_user_dependency)):
+    """Delete a user (Admin only)"""
+    if current_user['role'] not in [UserRole.SUPER_ADMIN, UserRole.BRANCH_ADMIN]:
+        raise HTTPException(status_code=403, detail="Insufficient permissions")
+    
+    result = await db.users.delete_one({"id": user_id})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="User not found")
+    return {"message": "User deleted successfully"}
+
+# ============ REPORTS ROUTES ============
+
+@api_router.get("/reports/sales")
+async def get_sales_report(from_date: Optional[str] = None, to_date: Optional[str] = None):
+    """Get sales report by date range"""
+    query = {}
+    if from_date:
+        query["created_at"] = {"$gte": from_date}
+    if to_date:
+        if "created_at" in query:
+            query["created_at"]["$lte"] = to_date
+        else:
+            query["created_at"] = {"$lte": to_date}
+    
+    orders = await db.orders.find(query, {"_id": 0}).to_list(10000)
+    
+    total_sales = sum(order.get('grand_total', 0) for order in orders)
+    total_orders = len(orders)
+    avg_order_value = total_sales / total_orders if total_orders > 0 else 0
+    
+    # Group by date
+    sales_by_date = {}
+    for order in orders:
+        date_str = order.get('created_at', '')[:10]  # Get date part
+        if date_str not in sales_by_date:
+            sales_by_date[date_str] = {"orders": 0, "revenue": 0}
+        sales_by_date[date_str]["orders"] += 1
+        sales_by_date[date_str]["revenue"] += order.get('grand_total', 0)
+    
+    return {
+        "total_sales": round(total_sales, 2),
+        "total_orders": total_orders,
+        "avg_order_value": round(avg_order_value, 2),
+        "sales_by_date": sales_by_date,
+        "orders": orders
+    }
+
+@api_router.get("/reports/items")
+async def get_items_report():
+    """Get item-wise sales report"""
+    orders = await db.orders.find({}, {"_id": 0, "items": 1}).to_list(10000)
+    
+    item_sales = {}
+    for order in orders:
+        for item in order.get('items', []):
+            item_id = item.get('item_id')
+            item_name = item.get('item_name')
+            quantity = item.get('quantity', 0)
+            revenue = item.get('price', 0) * quantity
+            
+            if item_id not in item_sales:
+                item_sales[item_id] = {
+                    "item_name": item_name,
+                    "quantity_sold": 0,
+                    "revenue": 0
+                }
+            
+            item_sales[item_id]["quantity_sold"] += quantity
+            item_sales[item_id]["revenue"] += revenue
+    
+    # Convert to list and sort by revenue
+    items_list = [{"item_id": k, **v} for k, v in item_sales.items()]
+    items_list.sort(key=lambda x: x['revenue'], reverse=True)
+    
+    return {
+        "items": items_list,
+        "total_items": len(items_list)
+    }
+
 # Include the router in the main app
 app.include_router(api_router)
 
