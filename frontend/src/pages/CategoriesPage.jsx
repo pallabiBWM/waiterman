@@ -151,7 +151,7 @@ export default function CategoriesPage() {
               </DialogTrigger>
               <DialogContent>
                 <DialogHeader>
-                  <DialogTitle>Create Category</DialogTitle>
+                  <DialogTitle>{editingCategory ? 'Edit Category' : 'Create Category'}</DialogTitle>
                 </DialogHeader>
                 <form onSubmit={handleCategorySubmit} className="space-y-4">
                   <div>
@@ -165,7 +165,7 @@ export default function CategoriesPage() {
                     />
                   </div>
                   <Button type="submit" data-testid="submit-category-button" className="w-full">
-                    Create
+                    {editingCategory ? 'Update' : 'Create'}
                   </Button>
                 </form>
               </DialogContent>
