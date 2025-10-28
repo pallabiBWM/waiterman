@@ -17,7 +17,8 @@ export const AuthProvider = ({ children }) => {
     } else {
       setLoading(false);
     }
-  }, [token]);
+    // eslint-disable-next-line
+  }, []);
 
   const fetchUser = async () => {
     try {
@@ -39,6 +40,7 @@ export const AuthProvider = ({ children }) => {
     localStorage.setItem('token', access_token);
     setToken(access_token);
     setUser(userData);
+    setLoading(false);
     return userData;
   };
 
