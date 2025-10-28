@@ -79,8 +79,8 @@ async def get_current_user_dependency(credentials: HTTPAuthorizationCredentials 
 
 def require_role(allowed_roles: list):
     """Dependency to check if user has required role"""
-    async def role_checker(credentials: HTTPAuthorizationCredentials = Depends(security), db: AsyncIOMotorDatabase = None):
-        user = await get_current_user(credentials, db)
+    async def role_checker(credentials: HTTPAuthorizationCredentials = Depends(security)):
+        user = await get_current_user_dependency(credentials)
         if user['role'] not in allowed_roles:
             raise HTTPException(
                 status_code=status.HTTP_403_FORBIDDEN,
