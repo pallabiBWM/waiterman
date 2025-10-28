@@ -1,5 +1,5 @@
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { LayoutDashboard, Utensils, List, ShoppingBag, QrCode, LogOut, TrendingUp, Tag, Calendar, Users } from 'lucide-react';
+import { LayoutDashboard, Utensils, List, ShoppingBag, QrCode, LogOut, Tag } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { Button } from '@/components/ui/button';
 
@@ -11,13 +11,10 @@ export const AdminLayout = ({ children }) => {
   const navItems = [
     { path: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
     { path: '/tables', icon: QrCode, label: 'Tables' },
-    { path: '/reservations', icon: Calendar, label: 'Reservations' },
     { path: '/categories', icon: List, label: 'Categories' },
     { path: '/menu', icon: Utensils, label: 'Menu' },
     { path: '/orders', icon: ShoppingBag, label: 'Orders' },
     { path: '/discounts', icon: Tag, label: 'Discounts' },
-    { path: '/reports', icon: TrendingUp, label: 'Reports' },
-    { path: '/staff', icon: Users, label: 'Staff' },
   ];
 
   const handleLogout = () => {
