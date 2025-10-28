@@ -1,13 +1,12 @@
 import { useEffect, useState } from 'react';
 import { AdminLayout } from '../components/AdminLayout';
 import axios from 'axios';
-import { getAuthHeader } from '../context/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Plus, Trash2, X } from 'lucide-react';
+import { Plus, Edit2, Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
 import { Textarea } from '@/components/ui/textarea';
 
@@ -17,33 +16,24 @@ const API = `${BACKEND_URL}/api`;
 export default function MenuPage() {
   const [menuItems, setMenuItems] = useState([]);
   const [categories, setCategories] = useState([]);
-  const [subcategories, setSubcategories] = useState([]);
   const [open, setOpen] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     description: '',
-    category_id: '',
-    sub_category_id: '',
-    pricing: {
-      dine_in: '',
-      takeaway: '',
-      delivery: ''
-    },
+    price: '',
     tax: '',
+    category_id: '',
     availability: true,
-    modifiers: []
   });
-  const [newModifier, setNewModifier] = useState({ name: '', price: '' });
 
   useEffect(() => {
     fetchMenuItems();
     fetchCategories();
-    fetchSubcategories();
   }, []);
 
   const fetchMenuItems = async () => {
     try {
-      const response = await axios.get(`${API}/menu/items`, { headers: getAuthHeader() });
+      const response = await axios.get(`${API}/menu/items`);
       setMenuItems(response.data);
     } catch (error) {
       console.error('Error fetching menu items:', error);
@@ -53,68 +43,24 @@ export default function MenuPage() {
 
   const fetchCategories = async () => {
     try {
-      const response = await axios.get(`${API}/categories`, { headers: getAuthHeader() });
+      const response = await axios.get(`${API}/categories`);
       setCategories(response.data);
     } catch (error) {
       console.error('Error fetching categories:', error);
     }
   };
 
-  const fetchSubcategories = async () => {
-    try {
-      const response = await axios.get(`${API}/subcategories`, { headers: getAuthHeader() });
-      setSubcategories(response.data);
-    } catch (error) {
-      console.error('Error fetching subcategories:', error);
-    }
-  };
-
-  const handleAddModifier = () => {
-    if (newModifier.name && newModifier.price) {
-      setFormData({
-        ...formData,
-        modifiers: [...formData.modifiers, { name: newModifier.name, price: parseFloat(newModifier.price) }]
-      });
-      setNewModifier({ name: '', price: '' });
-    }
-  };
-
-  const handleRemoveModifier = (index) => {
-    setFormData({
-      ...formData,
-      modifiers: formData.modifiers.filter((_, i) => i !== index)
-    });
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post(
-        `${API}/menu/item`,
-        {
-          ...formData,
-          pricing: {
-            dine_in: parseFloat(formData.pricing.dine_in),
-            takeaway: parseFloat(formData.pricing.takeaway),
-            delivery: parseFloat(formData.pricing.delivery) || 0
-          },
-          tax: parseFloat(formData.tax || 0),
-          sub_category_id: formData.sub_category_id || null
-        },
-        { headers: getAuthHeader() }
-      );
+      await axios.post(`${API}/menu/item`, {
+        ...formData,
+        price: parseFloat(formData.price),
+        tax: parseFloat(formData.tax || 0),
+      });
       toast.success('Menu item created successfully');
       setOpen(false);
-      setFormData({
-        name: '',
-        description: '',
-        category_id: '',
-        sub_category_id: '',
-        pricing: { dine_in: '', takeaway: '', delivery: '' },
-        tax: '',
-        availability: true,
-        modifiers: []
-      });
+      setFormData({ name: '', description: '', price: '', tax: '', category_id: '', availability: true });
       fetchMenuItems();
     } catch (error) {
       console.error('Error creating menu item:', error);
@@ -125,7 +71,7 @@ export default function MenuPage() {
   const handleDelete = async (id) => {
     if (!window.confirm('Are you sure you want to delete this item?')) return;
     try {
-      await axios.delete(`${API}/menu/item/${id}`, { headers: getAuthHeader() });
+      await axios.delete(`${API}/menu/item/${id}`);
       toast.success('Menu item deleted');
       fetchMenuItems();
     } catch (error) {
@@ -138,16 +84,6 @@ export default function MenuPage() {
     const cat = categories.find((c) => c.id === categoryId);
     return cat ? cat.name : 'Unknown';
   };
-
-  const getSubcategoryName = (subcategoryId) => {
-    if (!subcategoryId) return '';
-    const subcat = subcategories.find((s) => s.id === subcategoryId);
-    return subcat ? ` / ${subcat.name}` : '';
-  };
-
-  const filteredSubcategories = subcategories.filter(
-    (sub) => sub.category_id === formData.category_id
-  );
 
   return (
     <AdminLayout>
@@ -167,7 +103,7 @@ export default function MenuPage() {
                 Add Menu Item
               </Button>
             </DialogTrigger>
-            <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+            <DialogContent className="max-w-2xl">
               <DialogHeader>
                 <DialogTitle>Create Menu Item</DialogTitle>
               </DialogHeader>
@@ -190,7 +126,7 @@ export default function MenuPage() {
                       data-testid="menu-item-category-select"
                       className="w-full p-2 border rounded-md"
                       value={formData.category_id}
-                      onChange={(e) => setFormData({ ...formData, category_id: e.target.value, sub_category_id: '' })}
+                      onChange={(e) => setFormData({ ...formData, category_id: e.target.value })}
                       required
                     >
                       <option value="">Select Category</option>
@@ -202,26 +138,6 @@ export default function MenuPage() {
                     </select>
                   </div>
                 </div>
-
-                <div>
-                  <Label htmlFor="subcategory">Subcategory (Optional)</Label>
-                  <select
-                    id="subcategory"
-                    data-testid="menu-item-subcategory-select"
-                    className="w-full p-2 border rounded-md"
-                    value={formData.sub_category_id}
-                    onChange={(e) => setFormData({ ...formData, sub_category_id: e.target.value })}
-                    disabled={!formData.category_id}
-                  >
-                    <option value="">Select Subcategory</option>
-                    {filteredSubcategories.map((sub) => (
-                      <option key={sub.id} value={sub.id}>
-                        {sub.name}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
                 <div>
                   <Label htmlFor="description">Description</Label>
                   <Textarea
@@ -229,103 +145,34 @@ export default function MenuPage() {
                     data-testid="menu-item-description-input"
                     value={formData.description}
                     onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                    rows={2}
+                    rows={3}
                   />
                 </div>
-
-                <div className="border p-4 rounded-lg bg-gray-50">
-                  <h3 className="font-semibold mb-3">Pricing (₹)</h3>
-                  <div className="grid grid-cols-3 gap-4">
-                    <div>
-                      <Label htmlFor="dine_in_price">Dine-In Price</Label>
-                      <Input
-                        id="dine_in_price"
-                        data-testid="menu-item-dine-in-price-input"
-                        type="number"
-                        step="0.01"
-                        value={formData.pricing.dine_in}
-                        onChange={(e) => setFormData({ ...formData, pricing: { ...formData.pricing, dine_in: e.target.value } })}
-                        required
-                      />
-                    </div>
-                    <div>
-                      <Label htmlFor="takeaway_price">Takeaway Price</Label>
-                      <Input
-                        id="takeaway_price"
-                        data-testid="menu-item-takeaway-price-input"
-                        type="number"
-                        step="0.01"
-                        value={formData.pricing.takeaway}
-                        onChange={(e) => setFormData({ ...formData, pricing: { ...formData.pricing, takeaway: e.target.value } })}
-                        required
-                      />
-                    </div>
-                    <div>
-                      <Label htmlFor="delivery_price">Delivery Price</Label>
-                      <Input
-                        id="delivery_price"
-                        data-testid="menu-item-delivery-price-input"
-                        type="number"
-                        step="0.01"
-                        value={formData.pricing.delivery}
-                        onChange={(e) => setFormData({ ...formData, pricing: { ...formData.pricing, delivery: e.target.value } })}
-                      />
-                    </div>
-                  </div>
-                </div>
-
-                <div>
-                  <Label htmlFor="tax">Tax (₹)</Label>
-                  <Input
-                    id="tax"
-                    data-testid="menu-item-tax-input"
-                    type="number"
-                    step="0.01"
-                    value={formData.tax}
-                    onChange={(e) => setFormData({ ...formData, tax: e.target.value })}
-                  />
-                </div>
-
-                <div className="border p-4 rounded-lg bg-gray-50">
-                  <h3 className="font-semibold mb-3">Modifiers</h3>
-                  <div className="flex gap-2 mb-3">
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <Label htmlFor="price">Price (₹)</Label>
                     <Input
-                      placeholder="Modifier name (e.g., Extra Cheese)"
-                      data-testid="modifier-name-input"
-                      value={newModifier.name}
-                      onChange={(e) => setNewModifier({ ...newModifier, name: e.target.value })}
-                    />
-                    <Input
-                      placeholder="Price"
-                      data-testid="modifier-price-input"
+                      id="price"
+                      data-testid="menu-item-price-input"
                       type="number"
                       step="0.01"
-                      className="w-32"
-                      value={newModifier.price}
-                      onChange={(e) => setNewModifier({ ...newModifier, price: e.target.value })}
+                      value={formData.price}
+                      onChange={(e) => setFormData({ ...formData, price: e.target.value })}
+                      required
                     />
-                    <Button type="button" onClick={handleAddModifier} data-testid="add-modifier-button">
-                      <Plus size={16} />
-                    </Button>
                   </div>
-                  <div className="space-y-2">
-                    {formData.modifiers.map((mod, index) => (
-                      <div key={index} className="flex items-center justify-between bg-white p-2 rounded" data-testid="modifier-item">
-                        <span>{mod.name} - ₹{mod.price}</span>
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => handleRemoveModifier(index)}
-                          data-testid="remove-modifier-button"
-                        >
-                          <X size={16} />
-                        </Button>
-                      </div>
-                    ))}
+                  <div>
+                    <Label htmlFor="tax">Tax (₹)</Label>
+                    <Input
+                      id="tax"
+                      data-testid="menu-item-tax-input"
+                      type="number"
+                      step="0.01"
+                      value={formData.tax}
+                      onChange={(e) => setFormData({ ...formData, tax: e.target.value })}
+                    />
                   </div>
                 </div>
-
                 <Button type="submit" data-testid="submit-menu-item-button" className="w-full">
                   Create Item
                 </Button>
@@ -342,43 +189,25 @@ export default function MenuPage() {
                   <div>
                     <div>{item.name}</div>
                     <div className="text-xs text-gray-500 font-normal mt-1">
-                      {getCategoryName(item.category_id)}{getSubcategoryName(item.sub_category_id)}
+                      {getCategoryName(item.category_id)}
                     </div>
                   </div>
-                  <Button
-                    data-testid="delete-menu-item-button"
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => handleDelete(item.id)}
-                  >
-                    <Trash2 size={16} className="text-red-600" />
-                  </Button>
+                  <div className="flex gap-2">
+                    <Button
+                      data-testid="delete-menu-item-button"
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => handleDelete(item.id)}
+                    >
+                      <Trash2 size={16} className="text-red-600" />
+                    </Button>
+                  </div>
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 <p className="text-gray-600 text-sm mb-3">{item.description || 'No description'}</p>
-                <div className="space-y-2 mb-3">
-                  <div className="flex justify-between text-sm">
-                    <span className="text-gray-600">Dine-In:</span>
-                    <span className="font-semibold text-blue-600">₹{item.pricing?.dine_in || item.price}</span>
-                  </div>
-                  <div className="flex justify-between text-sm">
-                    <span className="text-gray-600">Takeaway:</span>
-                    <span className="font-semibold text-green-600">₹{item.pricing?.takeaway || item.price}</span>
-                  </div>
-                  {item.pricing?.delivery > 0 && (
-                    <div className="flex justify-between text-sm">
-                      <span className="text-gray-600">Delivery:</span>
-                      <span className="font-semibold text-purple-600">₹{item.pricing.delivery}</span>
-                    </div>
-                  )}
-                </div>
-                {item.modifiers && item.modifiers.length > 0 && (
-                  <div className="text-xs text-gray-500 mb-2">
-                    {item.modifiers.length} modifier(s) available
-                  </div>
-                )}
                 <div className="flex justify-between items-center">
+                  <span className="text-2xl font-bold text-blue-600">₹{item.price}</span>
                   <span
                     className={`text-xs px-2 py-1 rounded-full ${
                       item.availability ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
