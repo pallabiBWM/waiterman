@@ -139,7 +139,13 @@ export default function CategoriesPage() {
         <div className="mb-8">
           <div className="flex justify-between items-center mb-4">
             <h2 className="text-2xl font-semibold">Categories</h2>
-            <Dialog open={catOpen} onOpenChange={setCatOpen}>
+            <Dialog open={catOpen} onOpenChange={(open) => {
+              setCatOpen(open);
+              if (!open) {
+                setCatForm({ name: '' });
+                setEditingCategory(null);
+              }
+            }}>
               <DialogTrigger asChild>
                 <Button
                   data-testid="add-category-button"
