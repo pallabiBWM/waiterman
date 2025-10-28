@@ -345,7 +345,7 @@ async def get_restaurants(
 @api_router.post("/branches", response_model=Branch)
 async def create_branch(
     branch: BranchCreate,
-    current_user: dict = Depends(lambda cred=Depends(None): get_current_user(cred, db))
+    current_user: dict = Depends(get_current_user_dependency)
 ):
     """Create a new branch"""
     # Verify restaurant exists and user has access
@@ -366,7 +366,7 @@ async def create_branch(
 @api_router.get("/branches", response_model=List[Branch])
 async def get_branches(
     restaurant_id: Optional[str] = None,
-    current_user: dict = Depends(lambda cred=Depends(None): get_current_user(cred, db))
+    current_user: dict = Depends(get_current_user_dependency)
 ):
     """Get all branches"""
     query = {}
@@ -384,7 +384,7 @@ async def get_branches(
 @api_router.get("/branches/{branch_id}", response_model=Branch)
 async def get_branch(
     branch_id: str,
-    current_user: dict = Depends(lambda cred=Depends(None): get_current_user(cred, db))
+    current_user: dict = Depends(get_current_user_dependency)
 ):
     """Get branch by ID"""
     branch = await db.branches.find_one({"id": branch_id}, {"_id": 0})
