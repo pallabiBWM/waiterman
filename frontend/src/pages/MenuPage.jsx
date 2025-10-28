@@ -309,23 +309,6 @@ export default function MenuPage() {
                 <Button type="submit" data-testid="submit-menu-item-button" className="w-full">
                   Create Item
                 </Button>
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="tax">Tax (₹)</Label>
-                    <Input
-                      id="tax"
-                      data-testid="menu-item-tax-input"
-                      type="number"
-                      step="0.01"
-                      value={formData.tax}
-                      onChange={(e) => setFormData({ ...formData, tax: e.target.value })}
-                    />
-                  </div>
-                </div>
-                <Button type="submit" data-testid="submit-menu-item-button" className="w-full">
-                  Create Item
-                </Button>
               </form>
             </DialogContent>
           </Dialog>
