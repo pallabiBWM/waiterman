@@ -1,28 +1,37 @@
-import { Link, useLocation } from 'react-router-dom';
-import { LayoutDashboard, Utensils, List, ShoppingBag, QrCode } from 'lucide-react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { LayoutDashboard, Utensils, List, ShoppingBag, QrCode, LogOut } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
+import { Button } from '@/components/ui/button';
 
 export const AdminLayout = ({ children }) => {
   const location = useLocation();
+  const navigate = useNavigate();
+  const { user, logout } = useAuth();
 
   const navItems = [
-    { path: '/', icon: LayoutDashboard, label: 'Dashboard' },
+    { path: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
     { path: '/tables', icon: QrCode, label: 'Tables' },
     { path: '/categories', icon: List, label: 'Categories' },
     { path: '/menu', icon: Utensils, label: 'Menu' },
     { path: '/orders', icon: ShoppingBag, label: 'Orders' },
   ];
 
+  const handleLogout = () => {
+    logout();
+    navigate('/login');
+  };
+
   return (
     <div className="flex min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-cyan-50">
       {/* Sidebar */}
-      <aside className="w-64 bg-white border-r border-gray-200 shadow-sm">
+      <aside className="w-64 bg-white border-r border-gray-200 shadow-sm flex flex-col">
         <div className="p-6 border-b border-gray-200">
           <h1 className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-cyan-600">
             WaiterMan POS
           </h1>
           <p className="text-sm text-gray-500 mt-1">Admin Panel</p>
         </div>
-        <nav className="p-4 space-y-2">
+        <nav className="p-4 space-y-2 flex-1">
           {navItems.map((item) => {
             const Icon = item.icon;
             const isActive = location.pathname === item.path;
@@ -43,6 +52,23 @@ export const AdminLayout = ({ children }) => {
             );
           })}
         </nav>
+        
+        {/* User section at bottom */}
+        <div className="p-4 border-t border-gray-200">
+          <div className="mb-3 px-2">
+            <p className="text-sm font-medium text-gray-900">{user?.name}</p>
+            <p className="text-xs text-gray-500 capitalize">{user?.role?.replace('_', ' ')}</p>
+          </div>
+          <Button
+            onClick={handleLogout}
+            data-testid="logout-button"
+            variant="outline"
+            className="w-full flex items-center gap-2 justify-center"
+          >
+            <LogOut size={16} />
+            Logout
+          </Button>
+        </div>
       </aside>
 
       {/* Main Content */}
