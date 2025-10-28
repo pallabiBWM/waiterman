@@ -178,14 +178,24 @@ export default function CategoriesPage() {
                 <CardHeader>
                   <CardTitle className="flex justify-between items-center">
                     <span>{cat.name}</span>
-                    <Button
-                      data-testid="delete-category-button"
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => handleDeleteCategory(cat.id)}
-                    >
-                      <Trash2 size={16} className="text-red-600" />
-                    </Button>
+                    <div className="flex gap-2">
+                      <Button
+                        data-testid="edit-category-button"
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => handleEditCategory(cat)}
+                      >
+                        <Edit size={16} className="text-blue-600" />
+                      </Button>
+                      <Button
+                        data-testid="delete-category-button"
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => handleDeleteCategory(cat.id)}
+                      >
+                        <Trash2 size={16} className="text-red-600" />
+                      </Button>
+                    </div>
                   </CardTitle>
                 </CardHeader>
               </Card>
