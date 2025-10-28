@@ -89,7 +89,7 @@ export default function MenuPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post(`${API}/menu/item`, {
+      const payload = {
         ...formData,
         pricing: {
           dine_in: parseFloat(formData.pricing.dine_in),
@@ -98,8 +98,16 @@ export default function MenuPage() {
         },
         tax: parseFloat(formData.tax || 0),
         sub_category_id: formData.sub_category_id || null
-      });
-      toast.success('Menu item created successfully');
+      };
+
+      if (editingItem) {
+        await axios.put(`${API}/menu/item/${editingItem}`, payload);
+        toast.success('Menu item updated successfully');
+      } else {
+        await axios.post(`${API}/menu/item`, payload);
+        toast.success('Menu item created successfully');
+      }
+      
       setOpen(false);
       setFormData({
         name: '',
@@ -111,11 +119,27 @@ export default function MenuPage() {
         availability: true,
         modifiers: []
       });
+      setEditingItem(null);
       fetchMenuItems();
     } catch (error) {
-      console.error('Error creating menu item:', error);
-      toast.error('Failed to create menu item');
+      console.error('Error saving menu item:', error);
+      toast.error('Failed to save menu item');
     }
+  };
+
+  const handleEditItem = (item) => {
+    setFormData({
+      name: item.name,
+      description: item.description || '',
+      pricing: item.pricing || { dine_in: item.price, takeaway: item.price, delivery: item.price },
+      tax: item.tax || 0,
+      category_id: item.category_id,
+      sub_category_id: item.sub_category_id || '',
+      availability: item.availability,
+      modifiers: item.modifiers || []
+    });
+    setEditingItem(item.id);
+    setOpen(true);
   };
 
   const handleDelete = async (id) => {
