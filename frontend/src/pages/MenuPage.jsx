@@ -218,7 +218,7 @@ export default function MenuPage() {
                 </div>
                 
                 <div className="border p-4 rounded-lg bg-gray-50">
-                  <h3 className="font-semibold mb-3">Pricing (₹)</h3>
+                  <h3 className="font-semibold mb-3">Pricing ($)</h3>
                   <div className="grid grid-cols-3 gap-4">
                     <div>
                       <Label htmlFor="dine_in_price">Dine-In</Label>
@@ -260,7 +260,7 @@ export default function MenuPage() {
                 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <Label htmlFor="tax">Tax (₹)</Label>
+                    <Label htmlFor="tax">Tax ($)</Label>
                     <Input
                       id="tax"
                       data-testid="menu-item-tax-input"
@@ -296,7 +296,7 @@ export default function MenuPage() {
                     <div className="space-y-2">
                       {formData.modifiers.map((mod, idx) => (
                         <div key={idx} className="flex justify-between items-center bg-white p-2 rounded">
-                          <span>{mod.name} - ₹{mod.price}</span>
+                          <span>{mod.name} - ${mod.price}</span>
                           <Button type="button" variant="ghost" size="sm" onClick={() => handleRemoveModifier(idx)}>
                             <Trash2 size={14} />
                           </Button>
@@ -342,16 +342,16 @@ export default function MenuPage() {
                 <div className="space-y-2 mb-3">
                   <div className="flex justify-between text-sm">
                     <span className="text-gray-600">Dine-In:</span>
-                    <span className="font-semibold text-blue-600">₹{item.pricing?.dine_in || item.price}</span>
+                    <span className="font-semibold text-blue-600">${item.pricing?.dine_in || item.price}</span>
                   </div>
                   <div className="flex justify-between text-sm">
                     <span className="text-gray-600">Takeaway:</span>
-                    <span className="font-semibold text-green-600">₹{item.pricing?.takeaway || item.price}</span>
+                    <span className="font-semibold text-green-600">${item.pricing?.takeaway || item.price}</span>
                   </div>
                   {item.pricing?.delivery > 0 && (
                     <div className="flex justify-between text-sm">
                       <span className="text-gray-600">Delivery:</span>
-                      <span className="font-semibold text-purple-600">₹{item.pricing.delivery}</span>
+                      <span className="font-semibold text-purple-600">${item.pricing.delivery}</span>
                     </div>
                   )}
                 </div>

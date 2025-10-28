@@ -30,7 +30,7 @@ export default function AdminDashboard() {
     ? [
         {
           title: 'Today Revenue',
-          value: `₹${stats.today_revenue}`,
+          value: `$${stats.today_revenue}`,
           icon: DollarSign,
           gradient: 'from-blue-500 to-cyan-500',
           testId: 'stat-today-revenue'
@@ -103,7 +103,7 @@ export default function AdminDashboard() {
               <CardContent className="space-y-4">
                 <div className="flex justify-between items-center">
                   <span className="text-gray-600">Total Revenue</span>
-                  <span className="font-bold text-lg">₹{stats.total_revenue}</span>
+                  <span className="font-bold text-lg">${stats.total_revenue}</span>
                 </div>
                 <div className="flex justify-between items-center">
                   <span className="text-gray-600">Total Orders</span>

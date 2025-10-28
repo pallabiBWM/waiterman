@@ -175,7 +175,7 @@ export default function CustomerOrder() {
                   <CardContent>
                     <p className="text-gray-600 text-sm mb-3">{item.description || 'Delicious item'}</p>
                     <div className="flex justify-between items-center">
-                      <span className="text-xl font-bold text-blue-600">₹{item.price}</span>
+                      <span className="text-xl font-bold text-blue-600">${item.price}</span>
                       <Button
                         data-testid="add-to-cart-button"
                         onClick={() => addToCart(item)}
@@ -210,7 +210,7 @@ export default function CustomerOrder() {
                       <div key={item.item_id} className="flex justify-between items-center border-b pb-3" data-testid="cart-item">
                         <div className="flex-1">
                           <div className="font-medium">{item.item_name}</div>
-                          <div className="text-sm text-gray-600">₹{item.price}</div>
+                          <div className="text-sm text-gray-600">${item.price}</div>
                         </div>
                         <div className="flex items-center gap-2">
                           <Button
@@ -245,15 +245,15 @@ export default function CustomerOrder() {
                     <div className="space-y-2 pt-4 border-t">
                       <div className="flex justify-between text-sm">
                         <span>Subtotal:</span>
-                        <span>₹{cartTotal.toFixed(2)}</span>
+                        <span>${cartTotal.toFixed(2)}</span>
                       </div>
                       <div className="flex justify-between text-sm">
                         <span>Tax:</span>
-                        <span>₹{cartTax.toFixed(2)}</span>
+                        <span>${cartTax.toFixed(2)}</span>
                       </div>
                       <div className="flex justify-between font-bold text-lg">
                         <span>Total:</span>
-                        <span data-testid="cart-grand-total">₹{grandTotal.toFixed(2)}</span>
+                        <span data-testid="cart-grand-total">${grandTotal.toFixed(2)}</span>
                       </div>
                     </div>
 

@@ -103,15 +103,15 @@ export default function OrdersPage() {
                           <span>
                             {item.item_name} x {item.quantity}
                           </span>
-                          <span>₹{(item.price * item.quantity).toFixed(2)}</span>
+                          <span>${(item.price * item.quantity).toFixed(2)}</span>
                         </div>
                       ))}
                     </div>
                     <div className="border-t pt-3 flex justify-between items-center">
                       <div>
-                        <div className="text-sm text-gray-600">Subtotal: ₹{order.total_amount}</div>
-                        <div className="text-sm text-gray-600">Tax: ₹{order.tax}</div>
-                        <div className="font-bold text-lg">Total: ₹{order.grand_total}</div>
+                        <div className="text-sm text-gray-600">Subtotal: ${order.total_amount}</div>
+                        <div className="text-sm text-gray-600">Tax: ${order.tax}</div>
+                        <div className="font-bold text-lg">Total: ${order.grand_total}</div>
                       </div>
                       {nextStatus && order.order_status !== 'completed' && order.order_status !== 'cancelled' && (
                         <Button
