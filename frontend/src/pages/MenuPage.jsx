@@ -339,8 +339,28 @@ export default function MenuPage() {
               </CardHeader>
               <CardContent>
                 <p className="text-gray-600 text-sm mb-3">{item.description || 'No description'}</p>
+                <div className="space-y-2 mb-3">
+                  <div className="flex justify-between text-sm">
+                    <span className="text-gray-600">Dine-In:</span>
+                    <span className="font-semibold text-blue-600">₹{item.pricing?.dine_in || item.price}</span>
+                  </div>
+                  <div className="flex justify-between text-sm">
+                    <span className="text-gray-600">Takeaway:</span>
+                    <span className="font-semibold text-green-600">₹{item.pricing?.takeaway || item.price}</span>
+                  </div>
+                  {item.pricing?.delivery > 0 && (
+                    <div className="flex justify-between text-sm">
+                      <span className="text-gray-600">Delivery:</span>
+                      <span className="font-semibold text-purple-600">₹{item.pricing.delivery}</span>
+                    </div>
+                  )}
+                </div>
+                {item.modifiers && item.modifiers.length > 0 && (
+                  <div className="text-xs text-gray-500 mb-2">
+                    {item.modifiers.length} modifier(s) available
+                  </div>
+                )}
                 <div className="flex justify-between items-center">
-                  <span className="text-2xl font-bold text-blue-600">₹{item.price}</span>
                   <span
                     className={`text-xs px-2 py-1 rounded-full ${
                       item.availability ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'
