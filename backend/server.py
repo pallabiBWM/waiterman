@@ -150,15 +150,25 @@ class SubCategory(BaseModel):
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
 # Menu Item Models
+class MenuItemModifier(BaseModel):
+    name: str
+    price: float = 0.0
+
+class MenuItemPricing(BaseModel):
+    dine_in: float
+    takeaway: float
+    delivery: float = 0.0
+
 class MenuItemCreate(BaseModel):
     category_id: str
     sub_category_id: Optional[str] = None
     name: str
     description: Optional[str] = None
-    price: float
+    pricing: MenuItemPricing
     tax: float = 0.0
     availability: bool = True
     image_url: Optional[str] = None
+    modifiers: Optional[List[MenuItemModifier]] = []
 
 class MenuItem(BaseModel):
     model_config = ConfigDict(extra="ignore")
@@ -167,10 +177,11 @@ class MenuItem(BaseModel):
     sub_category_id: Optional[str] = None
     name: str
     description: Optional[str] = None
-    price: float
+    pricing: MenuItemPricing
     tax: float = 0.0
     availability: bool = True
     image_url: Optional[str] = None
+    modifiers: Optional[List[MenuItemModifier]] = []
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
 # Table Models
