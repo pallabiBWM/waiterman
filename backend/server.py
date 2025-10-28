@@ -237,6 +237,164 @@ def generate_qr_code(data: str) -> str:
     img_str = base64.b64encode(buffer.getvalue()).decode()
     return f"data:image/png;base64,{img_str}"
 
+# ============ AUTHENTICATION ROUTES ============
+
+@api_router.post("/auth/register", response_model=User)
+async def register(user_data: UserRegister):
+    """Register a new user"""
+    # Check if user already exists
+    existing_user = await db.users.find_one({"email": user_data.email})
+    if existing_user:
+        raise HTTPException(status_code=400, detail="Email already registered")
+    
+    # Hash password
+    hashed_password = get_password_hash(user_data.password)
+    
+    # Create user
+    user_obj = User(
+        email=user_data.email,
+        name=user_data.name,
+        role=user_data.role,
+        restaurant_id=user_data.restaurant_id,
+        branch_id=user_data.branch_id
+    )
+    
+    doc = user_obj.model_dump()
+    doc['password'] = hashed_password
+    doc['created_at'] = doc['created_at'].isoformat()
+    
+    await db.users.insert_one(doc)
+    return user_obj
+
+@api_router.post("/auth/login", response_model=TokenResponse)
+async def login(credentials: UserLogin):
+    """Login user and return JWT token"""
+    # Find user
+    user = await db.users.find_one({"email": credentials.email}, {"_id": 0})
+    if not user:
+        raise HTTPException(status_code=401, detail="Invalid credentials")
+    
+    # Verify password
+    if not verify_password(credentials.password, user['password']):
+        raise HTTPException(status_code=401, detail="Invalid credentials")
+    
+    # Check if user is active
+    if not user.get('is_active', True):
+        raise HTTPException(status_code=401, detail="Account is deactivated")
+    
+    # Create access token
+    access_token = create_access_token(data={"sub": user['id'], "role": user['role']})
+    
+    # Parse user object
+    if isinstance(user['created_at'], str):
+        user['created_at'] = datetime.fromisoformat(user['created_at'])
+    
+    # Remove password from response
+    user.pop('password', None)
+    
+    return TokenResponse(access_token=access_token, user=user)
+
+@api_router.post("/auth/logout")
+async def logout():
+    """Logout user (client should delete token)"""
+    return {"message": "Logged out successfully"}
+
+@api_router.get("/auth/me", response_model=User)
+async def get_me(current_user: dict = Depends(lambda cred=Depends(None): get_current_user(cred, db))):
+    """Get current user info"""
+    if isinstance(current_user['created_at'], str):
+        current_user['created_at'] = datetime.fromisoformat(current_user['created_at'])
+    return User(**current_user)
+
+# ============ RESTAURANT ROUTES ============
+
+@api_router.post("/restaurants", response_model=Restaurant)
+async def create_restaurant(
+    restaurant: RestaurantCreate,
+    current_user: dict = Depends(lambda cred=Depends(None): get_current_user(cred, db))
+):
+    """Create a new restaurant"""
+    restaurant_obj = Restaurant(
+        owner_id=current_user['id'],
+        **restaurant.model_dump()
+    )
+    
+    doc = restaurant_obj.model_dump()
+    doc['created_at'] = doc['created_at'].isoformat()
+    
+    await db.restaurants.insert_one(doc)
+    return restaurant_obj
+
+@api_router.get("/restaurants", response_model=List[Restaurant])
+async def get_restaurants(
+    current_user: dict = Depends(lambda cred=Depends(None): get_current_user(cred, db))
+):
+    """Get all restaurants for current user"""
+    query = {}
+    if current_user['role'] != UserRole.SUPER_ADMIN:
+        query['owner_id'] = current_user['id']
+    
+    restaurants = await db.restaurants.find(query, {"_id": 0}).to_list(1000)
+    for rest in restaurants:
+        if isinstance(rest['created_at'], str):
+            rest['created_at'] = datetime.fromisoformat(rest['created_at'])
+    return restaurants
+
+# ============ BRANCH ROUTES ============
+
+@api_router.post("/branches", response_model=Branch)
+async def create_branch(
+    branch: BranchCreate,
+    current_user: dict = Depends(lambda cred=Depends(None): get_current_user(cred, db))
+):
+    """Create a new branch"""
+    # Verify restaurant exists and user has access
+    restaurant = await db.restaurants.find_one({"id": branch.restaurant_id})
+    if not restaurant:
+        raise HTTPException(status_code=404, detail="Restaurant not found")
+    
+    if current_user['role'] not in [UserRole.SUPER_ADMIN, UserRole.BRANCH_ADMIN] and restaurant['owner_id'] != current_user['id']:
+        raise HTTPException(status_code=403, detail="Insufficient permissions")
+    
+    branch_obj = Branch(**branch.model_dump())
+    doc = branch_obj.model_dump()
+    doc['created_at'] = doc['created_at'].isoformat()
+    
+    await db.branches.insert_one(doc)
+    return branch_obj
+
+@api_router.get("/branches", response_model=List[Branch])
+async def get_branches(
+    restaurant_id: Optional[str] = None,
+    current_user: dict = Depends(lambda cred=Depends(None): get_current_user(cred, db))
+):
+    """Get all branches"""
+    query = {}
+    if restaurant_id:
+        query['restaurant_id'] = restaurant_id
+    elif current_user.get('restaurant_id'):
+        query['restaurant_id'] = current_user['restaurant_id']
+    
+    branches = await db.branches.find(query, {"_id": 0}).to_list(1000)
+    for branch in branches:
+        if isinstance(branch['created_at'], str):
+            branch['created_at'] = datetime.fromisoformat(branch['created_at'])
+    return branches
+
+@api_router.get("/branches/{branch_id}", response_model=Branch)
+async def get_branch(
+    branch_id: str,
+    current_user: dict = Depends(lambda cred=Depends(None): get_current_user(cred, db))
+):
+    """Get branch by ID"""
+    branch = await db.branches.find_one({"id": branch_id}, {"_id": 0})
+    if not branch:
+        raise HTTPException(status_code=404, detail="Branch not found")
+    
+    if isinstance(branch['created_at'], str):
+        branch['created_at'] = datetime.fromisoformat(branch['created_at'])
+    return Branch(**branch)
+
 # ============ CATEGORY ROUTES ============
 
 @api_router.post("/categories", response_model=Category)
