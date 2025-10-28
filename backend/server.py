@@ -58,6 +58,71 @@ class OrderType(str, Enum):
 
 # ============ MODELS ============
 
+# ============ AUTH MODELS ============
+
+class UserRegister(BaseModel):
+    email: EmailStr
+    password: str
+    name: str
+    role: str = UserRole.STAFF
+    restaurant_id: Optional[str] = None
+    branch_id: Optional[str] = None
+
+class UserLogin(BaseModel):
+    email: EmailStr
+    password: str
+
+class User(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    email: EmailStr
+    name: str
+    role: str
+    restaurant_id: Optional[str] = None
+    branch_id: Optional[str] = None
+    is_active: bool = True
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+class TokenResponse(BaseModel):
+    access_token: str
+    token_type: str = "bearer"
+    user: dict
+
+# ============ RESTAURANT & BRANCH MODELS ============
+
+class RestaurantCreate(BaseModel):
+    name: str
+    contact: Optional[str] = None
+    email: Optional[str] = None
+    address: Optional[str] = None
+
+class Restaurant(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    owner_id: str
+    name: str
+    contact: Optional[str] = None
+    email: Optional[str] = None
+    address: Optional[str] = None
+    is_active: bool = True
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
+class BranchCreate(BaseModel):
+    restaurant_id: str
+    name: str
+    location: Optional[str] = None
+    contact: Optional[str] = None
+
+class Branch(BaseModel):
+    model_config = ConfigDict(extra="ignore")
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    restaurant_id: str
+    name: str
+    location: Optional[str] = None
+    contact: Optional[str] = None
+    is_active: bool = True
+    created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
 # Category Models
 class CategoryCreate(BaseModel):
     name: str
