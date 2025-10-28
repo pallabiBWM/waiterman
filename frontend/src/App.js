@@ -8,6 +8,7 @@ import CategoriesPage from './pages/CategoriesPage';
 import MenuPage from './pages/MenuPage';
 import OrdersPage from './pages/OrdersPage';
 import DiscountsPage from './pages/DiscountsPage';
+import POSScreen from './pages/POSScreen';
 import CustomerOrder from './pages/CustomerOrder';
 import { Toaster } from '@/components/ui/sonner';
 
