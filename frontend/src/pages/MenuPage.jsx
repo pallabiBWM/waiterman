@@ -37,6 +37,7 @@ export default function MenuPage() {
   useEffect(() => {
     fetchMenuItems();
     fetchCategories();
+    fetchSubcategories();
   }, []);
 
   const fetchMenuItems = async () => {
@@ -56,6 +57,32 @@ export default function MenuPage() {
     } catch (error) {
       console.error('Error fetching categories:', error);
     }
+  };
+
+  const fetchSubcategories = async () => {
+    try {
+      const response = await axios.get(`${API}/subcategories`);
+      setSubcategories(response.data);
+    } catch (error) {
+      console.error('Error fetching subcategories:', error);
+    }
+  };
+
+  const handleAddModifier = () => {
+    if (newModifier.name && newModifier.price) {
+      setFormData({
+        ...formData,
+        modifiers: [...formData.modifiers, { name: newModifier.name, price: parseFloat(newModifier.price) }]
+      });
+      setNewModifier({ name: '', price: '' });
+    }
+  };
+
+  const handleRemoveModifier = (index) => {
+    setFormData({
+      ...formData,
+      modifiers: formData.modifiers.filter((_, i) => i !== index)
+    });
   };
 
   const handleSubmit = async (e) => {
