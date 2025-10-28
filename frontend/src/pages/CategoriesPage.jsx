@@ -19,6 +19,8 @@ export default function CategoriesPage() {
   const [subOpen, setSubOpen] = useState(false);
   const [catForm, setCatForm] = useState({ name: '' });
   const [subForm, setSubForm] = useState({ name: '', category_id: '' });
+  const [editingCategory, setEditingCategory] = useState(null);
+  const [editingSubcategory, setEditingSubcategory] = useState(null);
 
   useEffect(() => {
     fetchCategories();
