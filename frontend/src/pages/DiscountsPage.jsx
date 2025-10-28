@@ -69,16 +69,16 @@ export default function DiscountsPage() {
 
   return (
     <AdminLayout>
-      <div className=\"p-8\">
-        <div className=\"flex justify-between items-center mb-8\">
+      <div className="p-8">
+        <div className="flex justify-between items-center mb-8">
           <div>
-            <h1 className="text-4xl font-bold text-gray-800 mb-2">Discounts & Promotions</h1>
+            <h1 className="text-4xl font-bold text-gray-800 mb-2">Discounts and Promotions</h1>
             <p className="text-gray-600">Manage offers and discounts</p>
           </div>
           <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
-              <Button data-testid=\"add-discount-button\" className=\"bg-gradient-to-r from-purple-500 to-pink-500\">
-                <Plus size={20} className=\"mr-2\" />
+              <Button data-testid="add-discount-button" className="bg-gradient-to-r from-purple-500 to-pink-500">
+                <Plus size={20} className="mr-2" />
                 Add Discount
               </Button>
             </DialogTrigger>
@@ -86,44 +86,44 @@ export default function DiscountsPage() {
               <DialogHeader>
                 <DialogTitle>Create Discount</DialogTitle>
               </DialogHeader>
-              <form onSubmit={handleSubmit} className=\"space-y-4\">
+              <form onSubmit={handleSubmit} className="space-y-4">
                 <div>
-                  <Label htmlFor=\"name\">Discount Name</Label>
+                  <Label htmlFor="name">Discount Name</Label>
                   <Input
-                    id=\"name\"
-                    data-testid=\"discount-name-input\"
+                    id="name"
+                    data-testid="discount-name-input"
                     value={formData.name}
                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                     required
                   />
                 </div>
                 <div>
-                  <Label htmlFor=\"type\">Type</Label>
+                  <Label htmlFor="type">Type</Label>
                   <select
-                    id=\"type\"
-                    data-testid=\"discount-type-select\"
-                    className=\"w-full p-2 border rounded-md\"
+                    id="type"
+                    data-testid="discount-type-select"
+                    className="w-full p-2 border rounded-md"
                     value={formData.type}
                     onChange={(e) => setFormData({ ...formData, type: e.target.value })}
                   >
-                    <option value=\"percentage\">Percentage</option>
-                    <option value=\"fixed\">Fixed Amount</option>
-                    <option value=\"bogo\">BOGO</option>
+                    <option value="percentage">Percentage</option>
+                    <option value="fixed">Fixed Amount</option>
+                    <option value="bogo">BOGO</option>
                   </select>
                 </div>
                 <div>
-                  <Label htmlFor=\"value\">Value</Label>
+                  <Label htmlFor="value">Value</Label>
                   <Input
-                    id=\"value\"
-                    data-testid=\"discount-value-input\"
-                    type=\"number\"
-                    step=\"0.01\"
+                    id="value"
+                    data-testid="discount-value-input"
+                    type="number"
+                    step="0.01"
                     value={formData.value}
                     onChange={(e) => setFormData({ ...formData, value: e.target.value })}
                     required
                   />
                 </div>
-                <Button type=\"submit\" data-testid=\"submit-discount-button\" className=\"w-full\">
+                <Button type="submit" data-testid="submit-discount-button" className="w-full">
                   Create Discount
                 </Button>
               </form>
@@ -131,31 +131,31 @@ export default function DiscountsPage() {
           </Dialog>
         </div>
 
-        <div className=\"grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6\">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           {discounts.map((discount) => (
-            <Card key={discount.id} className=\"border-0 shadow-lg\" data-testid=\"discount-card\">
+            <Card key={discount.id} className="border-0 shadow-lg" data-testid="discount-card">
               <CardHeader>
-                <CardTitle className=\"flex justify-between items-center\">
+                <CardTitle className="flex justify-between items-center">
                   <span>{discount.name}</span>
-                  <Button variant=\"ghost\" size=\"sm\" onClick={() => handleDelete(discount.id)} data-testid=\"delete-discount-button\">
-                    <Trash2 size={16} className=\"text-red-600\" />
+                  <Button variant="ghost" size="sm" onClick={() => handleDelete(discount.id)} data-testid="delete-discount-button">
+                    <Trash2 size={16} className="text-red-600" />
                   </Button>
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className=\"space-y-2\">
-                  <div className=\"flex justify-between\">
-                    <span className=\"text-gray-600\">Type:</span>
-                    <span className=\"font-semibold capitalize\">{discount.type}</span>
+                <div className="space-y-2">
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Type:</span>
+                    <span className="font-semibold capitalize">{discount.type}</span>
                   </div>
-                  <div className=\"flex justify-between\">
-                    <span className=\"text-gray-600\">Value:</span>
-                    <span className=\"font-bold text-blue-600\">
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Value:</span>
+                    <span className="font-bold text-blue-600">
                       {discount.type === 'percentage' ? `${discount.value}%` : `₹${discount.value}`}
                     </span>
                   </div>
-                  <div className=\"flex justify-between\">
-                    <span className=\"text-gray-600\">Status:</span>
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Status:</span>
                     <span className={`px-2 py-1 rounded text-xs ${discount.is_active ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-700'}`}>
                       {discount.is_active ? 'Active' : 'Inactive'}
                     </span>
