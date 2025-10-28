@@ -300,7 +300,7 @@ async def logout():
     return {"message": "Logged out successfully"}
 
 @api_router.get("/auth/me", response_model=User)
-async def get_me(current_user: dict = Depends(lambda cred=Depends(None): get_current_user(cred, db))):
+async def get_me(current_user: dict = Depends(get_current_user_dependency)):
     """Get current user info"""
     if isinstance(current_user['created_at'], str):
         current_user['created_at'] = datetime.fromisoformat(current_user['created_at'])
