@@ -90,12 +90,26 @@ export default function MenuPage() {
     try {
       await axios.post(`${API}/menu/item`, {
         ...formData,
-        price: parseFloat(formData.price),
+        pricing: {
+          dine_in: parseFloat(formData.pricing.dine_in),
+          takeaway: parseFloat(formData.pricing.takeaway),
+          delivery: parseFloat(formData.pricing.delivery || 0)
+        },
         tax: parseFloat(formData.tax || 0),
+        sub_category_id: formData.sub_category_id || null
       });
       toast.success('Menu item created successfully');
       setOpen(false);
-      setFormData({ name: '', description: '', price: '', tax: '', category_id: '', availability: true });
+      setFormData({
+        name: '',
+        description: '',
+        pricing: { dine_in: '', takeaway: '', delivery: '' },
+        tax: '',
+        category_id: '',
+        sub_category_id: '',
+        availability: true,
+        modifiers: []
+      });
       fetchMenuItems();
     } catch (error) {
       console.error('Error creating menu item:', error);
