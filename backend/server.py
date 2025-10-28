@@ -177,7 +177,8 @@ class MenuItem(BaseModel):
     sub_category_id: Optional[str] = None
     name: str
     description: Optional[str] = None
-    pricing: MenuItemPricing
+    pricing: Optional[MenuItemPricing] = None
+    price: Optional[float] = None  # Backward compatibility
     tax: float = 0.0
     availability: bool = True
     image_url: Optional[str] = None
