@@ -219,7 +219,7 @@ export default function CategoriesPage() {
               </DialogTrigger>
               <DialogContent>
                 <DialogHeader>
-                  <DialogTitle>Create Subcategory</DialogTitle>
+                  <DialogTitle>{editingSubcategory ? 'Edit Subcategory' : 'Create Subcategory'}</DialogTitle>
                 </DialogHeader>
                 <form onSubmit={handleSubcategorySubmit} className="space-y-4">
                   <div>
