@@ -65,9 +65,19 @@ export default function AdminDashboard() {
   return (
     <AdminLayout>
       <div className="p-8">
-        <div className="mb-8">
-          <h1 className="text-4xl font-bold text-gray-800 mb-2">Dashboard</h1>
-          <p className="text-gray-600">Welcome to WaiterMan POS - Your restaurant management system</p>
+        <div className="mb-8 flex justify-between items-center">
+          <div>
+            <h1 className="text-4xl font-bold text-gray-800 mb-2">Dashboard</h1>
+            <p className="text-gray-600">Welcome to WaiterMan POS - Your restaurant management system</p>
+          </div>
+          <Button
+            onClick={() => navigate('/pos')}
+            className="bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white px-8 py-6 text-lg font-bold shadow-xl"
+            data-testid="open-pos-button"
+          >
+            <Terminal size={24} className="mr-3" />
+            Open POS Screen
+          </Button>
         </div>
 
         {loading ? (
