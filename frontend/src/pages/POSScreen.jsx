@@ -627,9 +627,9 @@ export default function POSScreen() {
 
               {/* Action Buttons */}
               <div className="grid grid-cols-2 gap-2">
-                <Button variant="outline" onClick={handlePlaceOrder} className="text-xs gap-1">
+                <Button variant="outline" onClick={handlePlaceOrder} className="text-xs gap-1 col-span-2">
                   <Save size={14} />
-                  Save
+                  Place Order
                 </Button>
                 <Button variant="outline" onClick={handleKOT} className="text-xs gap-1">
                   <Printer size={14} />
@@ -638,10 +638,6 @@ export default function POSScreen() {
                 <Button variant="outline" onClick={handleGenerateBill} className="text-xs gap-1">
                   <DollarSign size={14} />
                   Bill
-                </Button>
-                <Button variant="outline" onClick={() => toast.info('Order sent')} className="text-xs gap-1">
-                  <Send size={14} />
-                  Send
                 </Button>
               </div>
 
